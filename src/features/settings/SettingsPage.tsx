@@ -282,8 +282,10 @@ export default function SettingsPage() {
                   id="setting-model"
                   value={settings.defaultModelId}
                   onChange={(event) => {
-                    setSetting("defaultModelId", event.target.value);
-                    void services.model.setActiveModel(event.target.value);
+                    const nextModel = event.target.value;
+                    void services.model.setActiveModel(nextModel)
+                      .then(() => setSetting("defaultModelId", nextModel))
+                      .catch((error) => pushToast({ title: t("common.error"), description: error instanceof Error ? error.message : String(error), variant: "error" }));
                   }}
                 >
                   {models.map((model) => (
