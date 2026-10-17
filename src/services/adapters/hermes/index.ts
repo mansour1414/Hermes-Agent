@@ -653,8 +653,8 @@ const chatService: ChatService = {
           yield { type: "message-delta", messageId: assistantId, delta: event.text || "" };
           continue;
         }
-        if (event.kind === "tool" && event.token) {
-          const tool = event.token;
+        if (event.kind === "tool" && event.tool) {
+          const tool = event.tool;
           const previous = tools.get(tool.id);
           tools.set(tool.id, {
             id: tool.id,
