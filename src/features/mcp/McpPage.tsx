@@ -71,6 +71,7 @@ export default function McpPage() {
     services.mcp
       .listServers()
       .then(setServers)
+      .catch((error) => pushToast({ title: t("common.error"), description: error instanceof Error ? error.message : String(error), variant: "error" }))
       .finally(() => setLoading(false));
   };
 
