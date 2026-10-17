@@ -105,6 +105,10 @@ export default function DashboardPage() {
         setMcpCount(mcp.length);
         setToolsCount(tools.length);
       })
+      .catch((error) => {
+        // Keep the dashboard usable even if one upstream service is offline.
+        if (!cancelled) console.error("[dashboard] Failed to load overview:", error);
+      })
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
