@@ -48,7 +48,7 @@ export function Dropdown({
         <div
           role="menu"
           className={cn(
-            "absolute z-40 mt-2 min-w-52 overflow-hidden rounded-xl border border-line bg-surface p-1 shadow-[var(--shadow-float)] animate-[scale-in_0.14s_ease-out]",
+            "absolute z-40 mt-2 w-max min-w-44 max-w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-line bg-surface p-1 shadow-[var(--shadow-float)] animate-[scale-in_0.14s_ease-out]",
             align === "end" ? "end-0" : "start-0",
           )}
         >
@@ -64,7 +64,7 @@ export function Dropdown({
                   item.onSelect();
                 }}
                 className={cn(
-                  "flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-start text-[0.8125rem] transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+                  "flex w-full min-w-0 items-center gap-2.5 rounded-lg px-2.5 py-2 text-start break-words text-[0.8125rem] transition-colors disabled:cursor-not-allowed disabled:opacity-50",
                   item.danger
                     ? "text-danger hover:bg-danger-soft"
                     : "text-ink hover:bg-surface-2",
