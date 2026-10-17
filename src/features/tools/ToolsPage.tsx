@@ -93,7 +93,7 @@ export default function ToolsPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[100rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
       <PageHeader title={t("tools.title")} description={t("tools.subtitle")} />
 
       <DemoNotice text={t("tools.demoNotice")} className="mb-5" />
