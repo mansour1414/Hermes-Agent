@@ -150,6 +150,8 @@
   }
 
   html {
+    width: 100%;
+    overflow-x: hidden;
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
   }
@@ -159,6 +161,9 @@
   html[data-font-size="lg"] { font-size: 17px; }
 
   body {
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
     background-color: rgb(var(--cc-canvas));
     color: rgb(var(--cc-fg));
     font-family: var(--font-sans);
@@ -186,6 +191,8 @@
   [dir="rtl"] {
     letter-spacing: 0;
   }
+
+  img, video, canvas, svg { max-width: 100%; }
 
   input, textarea, select, button {
     font: inherit;
