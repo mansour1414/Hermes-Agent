@@ -159,7 +159,7 @@ export default function ModelsPage() {
   const comparedModels = models.filter((model) => compare.includes(model.id));
 
   return (
-    <div className="mx-auto w-full max-w-[100rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
       <PageHeader
         title={t("models.title")}
         description={t("models.subtitle")}
