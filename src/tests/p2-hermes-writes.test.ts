@@ -88,7 +88,7 @@ describe("P2 Hermes write operations — isolated HTTP contracts", () => {
   });
 
   it("toggles MCP enabled state and verifies the server returned by Hermes", async () => {
-    const fetchMock = vi.fn().mockImplementation(async (url: string, init?: RequestInit) => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
       if (url.endsWith("/enabled")) return new Response("{}", { status: 200 });
       if (url.endsWith("/api/mcp/servers")) {
         return new Response(JSON.stringify({ servers: [{ name: "isolated-mcp", enabled: true, transport: "stdio" }] }), { status: 200 });
@@ -128,7 +128,7 @@ describe("P2 Hermes write operations — isolated HTTP contracts", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
     await createHermesServices().model.setActiveModel("safe-test-model");
-    const call = fetchMock.mock.calls.find(([url]: [string]) => url.endsWith("/api/model/set"));
+    const call = fetchMock.mock.calls.find((args) => String(args[0]).endsWith("/api/model/set"));
     expect(call).toBeDefined();
     expect(call![1].method).toBe("POST");
     expect(JSON.parse(String(call![1].body))).toEqual({
