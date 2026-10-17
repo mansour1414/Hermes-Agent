@@ -12,17 +12,17 @@ export function PageHeader({
   children?: ReactNode;
 }) {
   return (
-    <div className="mb-6 space-y-4">
+    <div className="mb-4 min-w-0 space-y-3 sm:mb-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-[1.375rem]">
+          <h1 className="text-lg font-semibold leading-snug text-ink sm:text-[1.375rem]">
             {title}
           </h1>
           {description ? (
             <p className="mt-1 text-[0.8125rem] leading-relaxed text-muted">{description}</p>
           ) : null}
         </div>
-        {actions ? <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div> : null}
+        {actions ? <div className="flex min-w-0 flex-wrap items-center gap-2">{actions}</div> : null}
       </div>
       {children}
     </div>
