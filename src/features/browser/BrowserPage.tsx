@@ -75,7 +75,7 @@ export default function BrowserPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[80rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
       <PageHeader
         title={t("browser.title")}
         description={t("browser.subtitle")}
