@@ -115,7 +115,7 @@ describe("P2 Hermes write operations — isolated HTTP contracts", () => {
   });
 
   it("changes active model using the configured provider slug", async () => {
-    const fetchMock = vi.fn().mockImplementation(async (url: string, init?: RequestInit) => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
       if (url.includes("/api/model/options")) return new Response(JSON.stringify({
         providers: [{ slug: "test-provider", name: "Test Provider", models: ["safe-test-model"], authenticated: true }],
       }), { status: 200 });
