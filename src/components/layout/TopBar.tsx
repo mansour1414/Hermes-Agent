@@ -123,6 +123,7 @@ export function TopBar() {
       <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
         <ModelSwitcher />
 
+        <div className="hidden sm:block">
         <Tooltip content={t("topbar.newChat")}>
           <Button
             size="icon"
@@ -133,6 +134,7 @@ export function TopBar() {
             <Plus className="h-4.5 w-4.5" />
           </Button>
         </Tooltip>
+        </div>
 
         <Tooltip content={`${t("topbar.connection")} — ${connection.message}`}>
           <button
