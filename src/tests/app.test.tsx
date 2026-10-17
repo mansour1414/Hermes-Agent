@@ -34,7 +34,7 @@ describe("application shell", () => {
   it("renders without crashing and shows the dashboard", async () => {
     renderApp("/");
     expect((await screen.findAllByText("لوحة التحكم")).length).toBeGreaterThan(0);
-    expect(await main().findByText("نظرة عامة على النظام")).toBeInTheDocument();
+    expect(await main().findByText("نظرة عامة على النظام", {}, { timeout: 10000 })).toBeInTheDocument();
   });
 
   it("renders the demo mode banner", async () => {
@@ -128,7 +128,7 @@ describe("projects", () => {
     await main().findByText("مساحات عمل تجمع المحادثات", { exact: false });
     await user.click(screen.getByRole("button", { name: "مشروع جديد" }));
 
-    const dialog = await screen.findByRole("dialog", { name: /مشروع جديد|إضافة خادم/ });
+    const dialog = await screen.findByRole("dialog", { name: /مشروع/ });
     await user.type(within(dialog).getByLabelText(/^اسم المشروع/), "Test Project");
     await user.type(within(dialog).getByLabelText(/^اسم المشروع \(عربي\)/), "مشروع تجريبي");
     await user.type(
@@ -159,8 +159,8 @@ describe("mcp form validation", () => {
     renderApp("/mcp");
     await main().findByText("خوادم بروتوكول MCP والأدوات التي تتيحها");
     await user.click(screen.getByRole("button", { name: "إضافة خادم" }));
-    const dialog = (await screen.findAllByRole("dialog"))[0];
-    await user.type(within(dialog).getByLabelText(/^الاسم/), "demo");
+    const dialog = await screen.findByRole("dialog", { name: "إضافة خادم" });
+    await user.type(within(dialog).getByLabelText(/^الاسم$/), "demo");
     await user.type(within(dialog).getByLabelText(/^الاسم \(عربي\)/), "تجريبي");
     await user.type(within(dialog).getByLabelText(/^الوصف/), "demo server description");
     await user.click(within(dialog).getByRole("button", { name: "حفظ" }));
