@@ -90,7 +90,7 @@ export default function ProjectsPage() {
   }, [projects, query]);
 
   return (
-    <div className="mx-auto w-full max-w-[100rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
       <PageHeader
         title={t("projects.title")}
         description={t("projects.subtitle")}
