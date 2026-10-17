@@ -97,7 +97,7 @@ export function ChatPanel() {
     return () => {
       cancelled = true;
     };
-  }, [sessionId, services, sessions]);
+  }, [sessionId, services]);
 
   // Create a new session when ?new=1
   useEffect(() => {
