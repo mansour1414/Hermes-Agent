@@ -88,7 +88,7 @@ export default function AutomationsPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[90rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
       <PageHeader
         title={t("automations.title")}
         description={t("automations.subtitle")}
