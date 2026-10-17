@@ -71,13 +71,18 @@ export function ChatPanel() {
         setModels(modelList);
         setProjects(projectList);
       })
+      .catch((error) => {
+        if (!cancelled) {
+          pushToast({ title: t("chats.errorTitle"), description: error instanceof Error ? error.message : t("common.error"), variant: "error" });
+        }
+      })
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
     return () => {
       cancelled = true;
     };
-  }, [services]);
+  }, [services, pushToast, t]);
 
   // Load active session
   useEffect(() => {
