@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { ChevronsLeft, ChevronsRight, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { NAV_ITEMS, NAV_SECTIONS } from "@/components/layout/navigation";
@@ -16,11 +17,20 @@ export function Sidebar() {
   const setMobileOpen = useUiStore((state) => state.setMobileSidebarOpen);
   const collapsed = sidebar === "collapsed";
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    document.addEventListener("keydown", onEscape);
+    return () => document.removeEventListener("keydown", onEscape);
+  }, [mobileOpen, setMobileOpen]);
+
   return (
     <>
       {mobileOpen ? (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-[2px] lg:hidden"
           onClick={() => setMobileOpen(false)}
           aria-hidden
         />
@@ -29,21 +39,19 @@ export function Sidebar() {
       <aside
         data-state={mobileOpen ? "open" : "closed"}
         className={cn(
-          "cc-sidebar fixed inset-y-0 start-0 z-50 flex flex-col border-e border-line bg-canvas-alt transition-[width,translate] duration-200 lg:static",
-          collapsed ? "w-[4.5rem]" : "w-[16.5rem]",
+          "cc-sidebar fixed inset-y-0 start-0 z-50 flex w-[min(18rem,calc(100vw-2rem))] flex-col border-e border-line bg-canvas-alt shadow-[var(--shadow-float)] transition-[width,translate] duration-200 lg:static lg:shadow-none",
+          collapsed ? "lg:w-[4.5rem]" : "lg:w-[16.5rem]",
         )}
         aria-label={t("nav.dashboard")}
       >
         <div className="flex h-16 shrink-0 items-center gap-2.5 px-4">
           <HermesMark className="h-8 w-8 shrink-0" />
-          {!collapsed ? (
-            <div className="min-w-0 flex-1">
+          <div className={cn("min-w-0 flex-1", collapsed && "lg:hidden")}>
               <p className="truncate text-[0.8125rem] font-semibold leading-tight text-ink">
                 Hermes Control
               </p>
               <p className="truncate text-[0.6875rem] leading-tight text-subtle">Control Center</p>
-            </div>
-          ) : null}
+          </div>
           <button
             type="button"
             onClick={() => setMobileOpen(false)}
@@ -60,13 +68,12 @@ export function Sidebar() {
             if (items.length === 0) return null;
             return (
               <div key={section.id}>
-                {!collapsed ? (
+                <div className={cn(collapsed && "lg:hidden")}>
                   <p className="mb-1.5 px-2.5 text-[0.6875rem] font-semibold uppercase tracking-wider text-subtle">
                     {t(section.labelKey)}
                   </p>
-                ) : (
-                  <div className="mx-auto mb-2 h-px w-6 bg-line" aria-hidden />
-                )}
+                </div>
+                {collapsed ? <div className="mx-auto mb-2 hidden h-px w-6 bg-line lg:block" aria-hidden /> : null}
                 <ul className="space-y-0.5">
                   {items.map((item) => (
                     <li key={item.id}>
@@ -76,13 +83,14 @@ export function Sidebar() {
                         className={collapsed ? "w-full" : "w-full"}
                       >
                         <NavLink
+                          aria-label={t(item.labelKey)}
                           to={item.path}
                           end={item.path === "/"}
                           onClick={() => setMobileOpen(false)}
                           className={({ isActive }) =>
                             cn(
                               "group flex items-center gap-3 rounded-lg px-2.5 py-2 text-[0.8125rem] font-medium transition-colors",
-                              collapsed && "justify-center px-0",
+                              collapsed && "lg:justify-center lg:px-0",
                               isActive
                                 ? "bg-accent-soft text-accent"
                                 : "text-muted hover:bg-surface-2 hover:text-ink",
@@ -90,7 +98,7 @@ export function Sidebar() {
                           }
                         >
                           <item.icon className="h-4.5 w-4.5 shrink-0" aria-hidden />
-                          {!collapsed ? <span className="truncate">{t(item.labelKey)}</span> : null}
+                          <span className={cn("truncate", collapsed && "lg:hidden")}>{t(item.labelKey)}</span>
                         </NavLink>
                       </Tooltip>
                     </li>
