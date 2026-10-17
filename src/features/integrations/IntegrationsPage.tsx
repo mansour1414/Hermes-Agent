@@ -78,7 +78,7 @@ export default function IntegrationsPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[90rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
       <PageHeader title={t("integrations.title")} description={t("integrations.subtitle")} />
 
       <DemoNotice text={t("integrations.disclaimer")} className="mb-5" />
