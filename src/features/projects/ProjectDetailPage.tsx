@@ -100,7 +100,7 @@ export default function ProjectDetailPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto w-full max-w-[80rem] space-y-4">
+      <div className="mx-auto min-w-0 w-full max-w-[76rem] space-y-4">
         <Skeleton className="h-10 w-64" />
         <Skeleton className="h-64" />
       </div>
@@ -109,7 +109,7 @@ export default function ProjectDetailPage() {
 
   if (!project) {
     return (
-      <div className="mx-auto w-full max-w-[80rem]">
+      <div className="mx-auto min-w-0 w-full max-w-[76rem]">
         <EmptyState
           title={t("errors.notFound")}
           description={t("errors.notFoundBody")}
@@ -135,7 +135,7 @@ export default function ProjectDetailPage() {
   const projectTools = tools.filter((tool) => project.toolIds.includes(tool.id));
 
   return (
-    <div className="mx-auto w-full max-w-[80rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
       <button
         type="button"
         onClick={() => navigate("/projects")}
