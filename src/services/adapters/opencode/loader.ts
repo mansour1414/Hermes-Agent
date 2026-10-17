@@ -17,6 +17,8 @@ const INVENTORY_URL = "/opencode-inventory.json";
 let cache: ModelInfo[] | null = null;
 let inflight: Promise<ModelInfo[]> | null = null;
 let lastError: string | null = null;
+let retryAfter = 0;
+const RETRY_DELAY_MS = 30_000;
 
 export function getOpenCodeInventoryError(): string | null {
   return lastError;
@@ -25,6 +27,7 @@ export function getOpenCodeInventoryError(): string | null {
 export async function loadOpenCodeInventory(): Promise<ModelInfo[]> {
   if (cache) return cache;
   if (inflight) return inflight;
+  if (Date.now() < retryAfter) return [];
 
   inflight = (async () => {
     try {
@@ -36,14 +39,16 @@ export async function loadOpenCodeInventory(): Promise<ModelInfo[]> {
       const models = parseOpenCodeInventory(raw);
       cache = models;
       lastError = null;
+      retryAfter = 0;
       return models;
     } catch (error) {
       lastError = error instanceof Error ? error.message : String(error);
       if (typeof console !== "undefined") {
         console.warn("[opencode] inventory not available:", lastError);
       }
-      cache = [];
-      return cache;
+      // A failed read must not permanently hide an inventory exported later.
+      retryAfter = Date.now() + RETRY_DELAY_MS;
+      return [];
     } finally {
       inflight = null;
     }
