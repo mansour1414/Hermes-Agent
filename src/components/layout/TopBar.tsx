@@ -74,12 +74,12 @@ export function TopBar() {
           : "text-subtle";
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-line bg-canvas/85 px-3 backdrop-blur-xl sm:px-5">
+    <header className="sticky top-0 z-30 flex h-16 min-w-0 shrink-0 items-center gap-2 border-b border-line bg-canvas/85 px-3 backdrop-blur-xl sm:px-5">
       <button
         type="button"
         onClick={() => setMobileSidebarOpen(true)}
         className="rounded-lg p-2 text-muted transition-colors hover:bg-surface-2 hover:text-ink lg:hidden"
-        aria-label="menu"
+        aria-label={locale === "ar" ? "فتح القائمة" : "Open navigation"}
       >
         <Menu className="h-5 w-5" />
       </button>
@@ -110,7 +110,8 @@ export function TopBar() {
       <button
         type="button"
         onClick={() => setCommandPaletteOpen(true)}
-        className="group mx-auto flex h-9 w-full max-w-md items-center gap-2.5 rounded-lg border border-line bg-surface-2 px-3 text-start text-[0.8125rem] text-subtle transition-colors hover:border-line-strong hover:bg-surface-3"
+        aria-label={t("topbar.searchPlaceholder")}
+        className="group mx-auto flex h-9 min-w-0 flex-1 items-center justify-center gap-2.5 rounded-lg border border-line bg-surface-2 px-2.5 text-start text-[0.8125rem] text-subtle transition-colors hover:border-line-strong hover:bg-surface-3 sm:justify-start sm:px-3"
       >
         <Search className="h-4 w-4 shrink-0" aria-hidden />
         <span className="hidden truncate sm:block">{t("topbar.searchPlaceholder")}</span>
@@ -119,7 +120,7 @@ export function TopBar() {
         </kbd>
       </button>
 
-      <div className="flex shrink-0 items-center gap-1.5">
+      <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
         <ModelSwitcher />
 
         <Tooltip content={t("topbar.newChat")}>
@@ -144,7 +145,7 @@ export function TopBar() {
           </button>
         </Tooltip>
 
-        <div className="relative">
+        <div className="relative hidden sm:block">
           <Tooltip content={t("topbar.notifications")}>
             <button
               type="button"
@@ -170,6 +171,7 @@ export function TopBar() {
           ) : null}
         </div>
 
+        <div className="hidden sm:block">
         <Tooltip content={t("topbar.theme")}>
           <Button
             variant="ghost"
@@ -180,6 +182,7 @@ export function TopBar() {
             {settings.theme === "dark" ? <Sun className="h-4.5 w-4.5" /> : <Moon className="h-4.5 w-4.5" />}
           </Button>
         </Tooltip>
+        </div>
 
         <Dropdown
           align="end"
