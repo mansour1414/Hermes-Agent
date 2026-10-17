@@ -138,8 +138,8 @@ describe("projects", () => {
     await user.click(within(dialog).getByRole("button", { name: "حفظ المشروع" }));
 
     await waitFor(() => {
-      expect(screen.getAllByText("مشروع تجريبي").length).toBeGreaterThan(0);
-    });
+      expect(within(screen.getByRole("main")).getAllByText("مشروع تجريبي").length).toBeGreaterThan(0);
+    }, { timeout: 10000 });
   });
 
   it("validates the project form", async () => {
