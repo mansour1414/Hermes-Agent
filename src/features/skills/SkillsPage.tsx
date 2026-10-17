@@ -71,19 +71,27 @@ export default function SkillsPage() {
   };
 
   const install = async (skill: SkillInfo) => {
-    const updated = await services.skill.install(skill.id);
-    setSkills((current) => current.map((item) => (item.id === skill.id ? updated : item)));
-    pushToast({ title: t("skills.installedToast"), description: skill.name, variant: "success" });
+    try {
+      const updated = await services.skill.install(skill.id);
+      setSkills((current) => current.map((item) => (item.id === skill.id ? updated : item)));
+      pushToast({ title: t("skills.installedToast"), description: skill.name, variant: "success" });
+    } catch (error) {
+      pushToast({ title: t("common.error"), description: error instanceof Error ? error.message : String(error), variant: "error" });
+    }
   };
 
   const remove = async (skill: SkillInfo) => {
-    await services.skill.remove(skill.id);
+    try {
+      await services.skill.remove(skill.id);
     setSkills((current) =>
       current.map((item) =>
         item.id === skill.id ? { ...item, status: "available", enabled: false } : item,
       ),
     );
     pushToast({ title: t("skills.removedToast"), variant: "info" });
+    } catch (error) {
+      pushToast({ title: t("common.error"), description: error instanceof Error ? error.message : String(error), variant: "error" });
+    }
   };
 
   const toggleFavorite = async (skill: SkillInfo) => {
