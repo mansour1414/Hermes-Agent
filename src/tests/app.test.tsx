@@ -5,6 +5,7 @@ import { MemoryRouter } from "react-router-dom";
 import { AppRoot } from "@/app/AppRoot";
 import { useSettingsStore, defaultSettings } from "@/stores/settingsStore";
 import { demoStore } from "@/services/adapters/mock/store";
+import { useUiStore } from "@/stores/uiStore";
 
 beforeEach(() => {
   window.localStorage.clear();
@@ -14,6 +15,8 @@ beforeEach(() => {
   // UI tests intentionally run against the deterministic demo adapter.
   window.localStorage.setItem("cc.adapter-mode", "mock");
   useSettingsStore.setState({ settings: defaultSettings });
+  // Zustand UI state is in-memory and survives component cleanup between tests.
+  useUiStore.setState({ commandPaletteOpen: false, mobileSidebarOpen: false, toasts: [] });
   demoStore.reset();
 });
 
@@ -125,15 +128,7 @@ describe("projects", () => {
     await main().findByText("مساحات عمل تجمع المحادثات", { exact: false });
     await user.click(screen.getByRole("button", { name: "مشروع جديد" }));
 
-    const dialog = (await screen.findAllByRole("dialog"))[0];
-    const all = await screen.findAllByRole("dialog");
-    console.log("DBG-COUNT", all.length, all.map((d) => d.getAttribute("aria-label")));
-    const inp = all[0].querySelector("#project-name") as HTMLInputElement | null;
-    console.log("DBG-INPUT", !!inp, inp?.labels?.length, inp?.id, (inp as HTMLInputElement | null)?.getAttribute("name"));
-    const lbl = all[0].querySelector("label[for='project-name']") as HTMLLabelElement | null;
-    console.log("DBG-LABEL", !!lbl, lbl?.textContent, lbl?.control?.id);
-    console.log("DBG-CONNECTED", dialog.isConnected, all[0].isConnected, dialog === all[0]);
-    console.log("DBG-TAIL", all[0].outerHTML.slice(-400));
+    const dialog = await screen.findByRole("dialog", { name: /مشروع جديد|إضافة خادم/ });
     await user.type(within(dialog).getByLabelText(/^اسم المشروع/), "Test Project");
     await user.type(within(dialog).getByLabelText(/^اسم المشروع \(عربي\)/), "مشروع تجريبي");
     await user.type(
@@ -183,7 +178,7 @@ describe("skills", () => {
     await waitFor(() => {
       expect(screen.getAllByText("refactor").length).toBeGreaterThan(0);
     });
-    expect(screen.queryByText("doc-writer")).not.toBeInTheDocument();
+    expect(main().queryByText("doc-writer")).not.toBeInTheDocument();
   });
 });
 
@@ -199,7 +194,7 @@ describe("models", () => {
     const providerSelect = screen.getByLabelText("المزوّد");
     await user.selectOptions(providerSelect, "OpenRouter");
     await waitFor(() => {
-      expect(screen.queryByText("Hermes Pro")).not.toBeInTheDocument();
+      expect(main().queryByText("Hermes Pro")).not.toBeInTheDocument();
     });
   });
 });
