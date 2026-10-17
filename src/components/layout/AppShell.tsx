@@ -50,7 +50,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [locale]);
 
   return (
-    <div className="flex min-h-screen min-w-0 overflow-x-clip bg-canvas">
+    <div className="flex h-dvh min-h-0 min-w-0 overflow-hidden bg-canvas">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-4 focus:z-[80] focus:rounded-lg focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:shadow-[var(--shadow-card)]"
@@ -58,10 +58,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         {settings.locale === "ar" ? "تخطَّ إلى المحتوى" : "Skip to content"}
       </a>
       <Sidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         <TopBar />
         <DemoBanner />
-        <main id="main-content" className={cn("min-w-0 flex-1 px-3 py-4 sm:px-6 sm:py-6")}>
+        <main id="main-content" className={cn("cc-scroll min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain px-3 py-4 sm:px-6 sm:py-6")}>
           {children}
         </main>
       </div>
