@@ -83,7 +83,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[70rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
       <PageHeader
         title={t("settings.title")}
         description={t("settings.subtitle")}
