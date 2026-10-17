@@ -91,7 +91,7 @@ export default function FilesPage() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-[100rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
       <PageHeader title={t("files.title")} description={t("files.subtitle")} />
 
       <DemoNotice text={t("files.readOnlyNotice")} className="mb-5" />
