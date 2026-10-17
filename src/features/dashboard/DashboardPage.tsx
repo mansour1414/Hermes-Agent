@@ -247,6 +247,8 @@ export default function DashboardPage() {
           )}
         </div>
 
+        <details className="mt-3 rounded-xl border border-line bg-surface/70 p-3">
+          <summary className="cursor-pointer text-sm font-medium text-muted hover:text-ink">{locale === "ar" ? "عرض تفاصيل النظام" : "Show system details"}</summary>
         <div className="mt-3 grid gap-3 sm:grid-cols-3 xl:grid-cols-5">
           {stats.map((stat) => (
             <Link
@@ -265,6 +267,7 @@ export default function DashboardPage() {
             </Link>
           ))}
         </div>
+        </details>
       </section>
 
       {/* Quick actions */}
@@ -272,7 +275,7 @@ export default function DashboardPage() {
         <h2 id="quick-heading" className="mb-3 text-[0.9375rem] font-semibold text-ink">
           {t("dashboard.quickActions")}
         </h2>
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {quickActions.map((action) => (
             <button
               key={action.label}
@@ -287,7 +290,9 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <div className="grid gap-6 xl:grid-cols-3">
+      <details className="group mb-4 rounded-xl border border-line bg-surface p-3 sm:p-4">
+        <summary className="cursor-pointer text-sm font-semibold text-muted transition-colors hover:text-ink">{locale === "ar" ? "التحليلات والتفاصيل الإضافية" : "Analytics and additional details"}</summary>
+      <div className="mt-4 grid min-w-0 gap-6 xl:grid-cols-3">
         {/* Usage analytics */}
         <section className="xl:col-span-2" aria-labelledby="usage-heading">
           <Card>
@@ -583,6 +588,7 @@ export default function DashboardPage() {
           </Card>
         </section>
       </div>
+      </details>
     </div>
   );
 }
