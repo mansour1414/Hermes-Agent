@@ -150,6 +150,6 @@ describe("hermes adapter stubs", () => {
 
   it("throws an unsupported error for unimplemented operations", async () => {
     const services = createHermesServices();
-    await expect(services.model.listModels()).rejects.toMatchObject({ code: "unsupported" });
+    await expect(services.browser.launch()).rejects.toMatchObject({ code: "unsupported" });
   });
 });
