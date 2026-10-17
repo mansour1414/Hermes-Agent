@@ -100,7 +100,7 @@ export default function SkillsPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[100rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
       <PageHeader title={t("skills.title")} description={t("skills.subtitle")} />
 
       <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
