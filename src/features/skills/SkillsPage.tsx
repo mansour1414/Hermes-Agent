@@ -32,6 +32,7 @@ export default function SkillsPage() {
     services.skill
       .listSkills()
       .then(setSkills)
+      .catch((error) => pushToast({ title: t("common.error"), description: error instanceof Error ? error.message : String(error), variant: "error" }))
       .finally(() => setLoading(false));
   };
 
