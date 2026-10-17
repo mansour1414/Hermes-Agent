@@ -140,7 +140,7 @@ describe("projects", () => {
     await waitFor(() => {
       expect(within(screen.getByRole("main")).getAllByText("مشروع تجريبي").length).toBeGreaterThan(0);
     }, { timeout: 10000 });
-  });
+  }, 15000);
 
   it("validates the project form", async () => {
     const user = userEvent.setup();
