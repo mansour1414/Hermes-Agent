@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type KeyboardEvent, type ReactNode } from "react";
 import { cn } from "@/utils/cn";
 
 export interface TabItem {
@@ -21,16 +21,30 @@ export function Tabs({
   className?: string;
   variant?: "underline" | "pill";
 }) {
+  const onTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (!items.length) return;
+    let next = index;
+    if (event.key === "ArrowRight") next = (index + 1) % items.length;
+    else if (event.key === "ArrowLeft") next = (index - 1 + items.length) % items.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = items.length - 1;
+    else return;
+    event.preventDefault();
+    onChange(items[next].id);
+    const buttons = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    buttons?.[next]?.focus();
+  };
+
   return (
     <div
       role="tablist"
       className={cn(
-        "cc-scroll flex gap-1 overflow-x-auto",
+        "cc-scroll flex min-w-0 gap-1 overflow-x-auto overscroll-x-contain",
         variant === "underline" ? "border-b border-line" : "rounded-lg bg-surface-2 p-1",
         className,
       )}
     >
-      {items.map((item) => {
+      {items.map((item, index) => {
         const active = item.id === value;
         return (
           <button
@@ -38,6 +52,8 @@ export function Tabs({
             role="tab"
             type="button"
             aria-selected={active}
+            tabIndex={active ? 0 : -1}
+            onKeyDown={(event) => onTabKeyDown(event, index)}
             onClick={() => onChange(item.id)}
             className={cn(
               "inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-[0.8125rem] font-medium transition-colors",
