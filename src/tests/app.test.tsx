@@ -129,8 +129,8 @@ describe("projects", () => {
     await user.click(screen.getByRole("button", { name: "مشروع جديد" }));
 
     const dialog = await screen.findByRole("dialog", { name: /مشروع/ });
-    await user.type(within(dialog).getByLabelText(/^اسم المشروع/), "Test Project");
-    await user.type(within(dialog).getByLabelText(/^اسم المشروع \(عربي\)/), "مشروع تجريبي");
+    await user.type(within(dialog).getByRole("textbox", { name: /^اسم المشروع\s*\*?$/ }), "Test Project");
+    await user.type(within(dialog).getByRole("textbox", { name: /اسم المشروع \(عربي\)/ }), "مشروع تجريبي");
     await user.type(
       within(dialog).getByLabelText(/^الوصف/),
       "A demo project created from the test suite.",
@@ -160,8 +160,8 @@ describe("mcp form validation", () => {
     await main().findByText("خوادم بروتوكول MCP والأدوات التي تتيحها");
     await user.click(screen.getByRole("button", { name: "إضافة خادم" }));
     const dialog = await screen.findByRole("dialog", { name: "إضافة خادم" });
-    await user.type(within(dialog).getByLabelText(/^الاسم$/), "demo");
-    await user.type(within(dialog).getByLabelText(/^الاسم \(عربي\)/), "تجريبي");
+    await user.type(within(dialog).getByRole("textbox", { name: /^الاسم\s*\*?$/ }), "demo");
+    await user.type(within(dialog).getByRole("textbox", { name: /الاسم \(عربي\)/ }), "تجريبي");
     await user.type(within(dialog).getByLabelText(/^الوصف/), "demo server description");
     await user.click(within(dialog).getByRole("button", { name: "حفظ" }));
     expect(await within(dialog).findByText(/الأمر مطلوب/)).toBeInTheDocument();
@@ -192,6 +192,9 @@ describe("models", () => {
     });
 
     const providerSelect = screen.getByLabelText("المزوّد");
+    await waitFor(() => {
+      expect(within(providerSelect).getByRole("option", { name: "OpenRouter" })).toBeInTheDocument();
+    });
     await user.selectOptions(providerSelect, "OpenRouter");
     await waitFor(() => {
       expect(main().queryByText("Hermes Pro")).not.toBeInTheDocument();
