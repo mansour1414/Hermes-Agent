@@ -57,7 +57,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
         aria-label={title}
         tabIndex={-1}
         className={cn(
-          "relative z-10 flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-2xl border border-line bg-surface shadow-[var(--shadow-float)] sm:rounded-2xl",
+          "relative z-10 flex max-h-[92dvh] min-w-0 w-full flex-col overflow-hidden rounded-t-2xl border border-line bg-surface shadow-[var(--shadow-float)] sm:rounded-2xl",
           sizes[size],
           "animate-[slide-up_0.2s_cubic-bezier(0.22,1,0.36,1)]",
         )}
@@ -76,8 +76,8 @@ export function Modal({ open, onClose, title, description, children, footer, siz
             <X className="h-4.5 w-4.5" />
           </button>
         </header>
-        <div className="cc-scroll flex-1 overflow-y-auto px-5 py-4">{children}</div>
-        {footer ? <footer className="flex items-center justify-end gap-2 border-t border-line px-5 py-3.5">{footer}</footer> : null}
+        <div className="cc-scroll min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-4 py-4 sm:px-5">{children}</div>
+        {footer ? <footer className="flex flex-wrap items-center justify-end gap-2 border-t border-line px-4 py-3 sm:px-5">{footer}</footer> : null}
       </div>
     </div>,
     document.body,
