@@ -47,7 +47,7 @@ export function ChatComposer({
   };
 
   return (
-    <div className="sticky bottom-0 z-10 border-t border-line bg-canvas/90 px-4 py-3 backdrop-blur-xl sm:px-6">
+    <div className="shrink-0 border-t border-line bg-canvas/95 px-3 py-2.5 backdrop-blur-xl sm:px-5">
       <div className="mx-auto w-full max-w-4xl">
         {attachments.length > 0 ? (
           <ul className="mb-2 flex flex-wrap gap-2">
