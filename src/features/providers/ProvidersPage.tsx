@@ -43,6 +43,7 @@ export default function ProvidersPage() {
     services.provider
       .listProviders()
       .then(setProviders)
+      .catch((error) => pushToast({ title: t("common.error"), description: error instanceof Error ? error.message : String(error), variant: "error" }))
       .finally(() => setLoading(false));
   };
 
