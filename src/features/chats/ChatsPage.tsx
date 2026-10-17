@@ -13,7 +13,8 @@ export default function ChatsPage() {
   // effect, so it must stay mounted here — replacing it with a placeholder
   // would unmount the only component that reacts to ?new=1.
   return (
-    <div className="mx-auto w-full max-w-[100rem]">
+    <div className="mx-auto flex h-full min-h-0 w-full max-w-[88rem] flex-col">
+      <div className="shrink-0">
       <PageHeader
         title={t("chats.title")}
         description={t("chats.subtitle")}
@@ -26,7 +27,10 @@ export default function ChatsPage() {
           </Button>
         }
       />
-      <ChatPanel />
+      </div>
+      <div className="min-h-0 min-w-0 flex-1">
+        <ChatPanel />
+      </div>
     </div>
   );
 }
