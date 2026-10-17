@@ -72,9 +72,13 @@ export default function ProvidersPage() {
   };
 
   const disconnect = async (provider: ProviderInfo) => {
-    await services.provider.disconnect(provider.id);
-    load();
-    pushToast({ title: t("providers.disconnect"), description: provider.name, variant: "info" });
+    try {
+      await services.provider.disconnect(provider.id);
+      load();
+      pushToast({ title: t("providers.disconnect"), description: provider.name, variant: "info" });
+    } catch (error) {
+      pushToast({ title: t("common.error"), description: error instanceof Error ? error.message : String(error), variant: "error" });
+    }
   };
 
   return (
