@@ -36,7 +36,7 @@ function env(name, fallback) {
 }
 
 const CONFIG = {
-  host: env("SNOWHARE_HOST", "127.0.0.1"),
+  host: "127.0.0.1", // never allow external listening for this privileged local bridge
   port: Number(env("SNOWHARE_PORT", "9200")),
   upstream: env("SNOWHARE_UPSTREAM", "http://127.0.0.1:9119").replace(/\/+$/, ""),
   hermesHome: env("HERMES_HOME", "D:\\hermes"),
@@ -292,19 +292,33 @@ async function prepareAttachments(attachments) {
   const images = [];
   const textParts = [];
   if (!Array.isArray(attachments)) return { images, textParts };
+  if (attachments.length > 4) throw new Error('Too many attachments (maximum 4).');
+  let totalDecoded = 0;
   for (const item of attachments) {
     if (!item || typeof item !== "object") continue;
     const mime = String(item.mime || "");
     const content = typeof item.content === "string" ? item.content : "";
     if (!content) continue;
-    if (mime.startsWith("image/") && content.startsWith("data:")) {
-      const base64 = content.slice(content.indexOf(",") + 1);
-      const ext = mime.split("/")[1]?.replace(/[^a-z0-9]/gi, "") || "png";
+    if (mime.startsWith('image/')) {
+      const formats = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif' };
+      const ext = formats[mime];
+      if (!ext || !content.startsWith(`data:${mime};base64,`)) throw new Error('Unsupported image type or encoding.');
+      const base64 = content.slice(content.indexOf(',') + 1);
+      if (!/^[a-zA-Z0-9+/]*={0,2}$/.test(base64)) throw new Error('Invalid image payload.');
+      const decodedSize = Buffer.byteLength(base64, 'base64');
+      if (decodedSize > 5 * 1024 * 1024) throw new Error('Image exceeds 5 MiB.');
+      totalDecoded += decodedSize;
+      if (totalDecoded > 10 * 1024 * 1024) throw new Error('Attachments exceed 10 MiB.');
       const file = path.join(os.tmpdir(), `snowhare-${crypto.randomUUID()}.${ext}`);
-      await fs.promises.writeFile(file, Buffer.from(base64, "base64"));
+      await fs.promises.writeFile(file, Buffer.from(base64, 'base64'), { flag: 'wx', mode: 0o600 });
       images.push(file);
-    } else if (mime.startsWith("text/") || mime === "application/json") {
-      textParts.push(`\n\n--- attached file: ${item.name || "attachment"} ---\n${content}`);
+    } else if (mime.startsWith('text/') || mime === 'application/json') {
+      if (Buffer.byteLength(content, 'utf8') > 256 * 1024) throw new Error('Text attachment exceeds 256 KiB.');
+      totalDecoded += Buffer.byteLength(content, 'utf8');
+      if (totalDecoded > 10 * 1024 * 1024) throw new Error('Attachments exceed 10 MiB.');
+      textParts.push(`\n\n--- attached file: ${String(item.name || 'attachment').slice(0, 120)} ---\n${content}`);
+    } else {
+      throw new Error('Unsupported attachment MIME type.');
     }
   }
   return { images, textParts };
@@ -328,8 +342,14 @@ async function bridgeChat(req, res) {
 
   const resumeId = resolveId(requested) || (isLocalId(requested) ? null : requested || null);
 
-  const { images, textParts } = await prepareAttachments(payload.attachments);
-  const prompt = content + textParts.join("");
+  let images, textParts;
+  try {
+    ({ images, textParts } = await prepareAttachments(payload.attachments));
+  } catch {
+    sendJson(res, 400, { error: 'invalid_attachments', message: 'Attachments rejected: check type, size, and count.' });
+    return;
+  }
+  const prompt = content + textParts.join('');
 
   const args = ["chat", "-q", prompt, "--format", "stream-json", "--pass-session-id"];
   if (resumeId) args.push("--resume", resumeId);
@@ -357,7 +377,7 @@ async function bridgeChat(req, res) {
       shell: false,
     });
   } catch (error) {
-    sseWrite(res, { kind: "error", message: `Failed to start Hermes: ${String(error)}` });
+    sseWrite(res, { kind: "error", message: "Failed to start Hermes process." });
     sseWrite(res, { kind: "done" });
     res.end();
     return;
@@ -494,7 +514,7 @@ async function bridgeChat(req, res) {
       if (result.error || exitCode !== 0) {
         sseWrite(res, {
           kind: "error",
-          message: cap(String(result.error || stderrTail || `Hermes exited with code ${exitCode}.`), 2000),
+          message: `Hermes failed (exit ${exitCode}). Check local server logs.`,
         });
       }
       sseWrite(res, {
@@ -510,7 +530,7 @@ async function bridgeChat(req, res) {
     } else {
       sseWrite(res, {
         kind: "error",
-        message: cap(stderrTail || "Hermes produced no result.", 2000),
+        message: "Hermes produced no result. Check local server logs.",
       });
     }
 
@@ -558,18 +578,8 @@ function bridgeAbort(req, res) {
       sendJson(res, 200, { ok: true, stopped: true });
       return;
     }
-    // Fall back: stop whatever is running for this browser session.
-    let stopped = false;
-    for (const [, c] of running) {
-      try {
-        c.kill();
-        stopped = true;
-      } catch {
-        /* ignore */
-      }
-    }
-    running.clear();
-    sendJson(res, 200, { ok: true, stopped });
+    // Never stop unrelated sessions on an unknown id.
+    sendJson(res, 404, { ok: false, error: "session_not_running", stopped: false });
   })();
 }
 
@@ -625,8 +635,8 @@ async function bridgeHealth(res) {
     ok: ok && tokenOk,
     proxy: { host: CONFIG.host, port: CONFIG.port, version: "1.0.0" },
     upstream,
-    hermesHome: CONFIG.hermesHome,
-    workspace: CONFIG.workspace || CONFIG.hermesHome,
+    hermesHome: "[local]",
+    workspace: "[local]",
     tokenAvailable: tokenOk,
     runningChats: running.size,
     knownLocalSessions: sessionMap.size,
@@ -657,12 +667,14 @@ const MIME = {
 
 function serveStatic(req, res, incomingUrl) {
   const distDir = path.resolve(CONFIG.distDir);
-  let rel = decodeURIComponent(incomingUrl.pathname);
+  let rel;
+  try { rel = decodeURIComponent(incomingUrl.pathname); }
+  catch { return sendJson(res, 400, { error: 'bad_path' }); }
   if (rel === "/" || rel === "") rel = "/index.html";
 
   let filePath = path.resolve(path.join(distDir, rel));
   // Path-traversal guard: never serve outside dist/.
-  if (!filePath.startsWith(distDir)) {
+  if (filePath !== distDir && !filePath.startsWith(distDir + path.sep)) {
     sendJson(res, 403, { error: "forbidden" });
     return;
   }
@@ -695,8 +707,30 @@ function serveStatic(req, res, incomingUrl) {
 /*  Server                                                                     */
 /* -------------------------------------------------------------------------- */
 
+const ALLOWED_HOSTS = new Set([
+  `127.0.0.1:${CONFIG.port}`,
+  `localhost:${CONFIG.port}`,
+  '127.0.0.1:5180',
+  'localhost:5180',
+]);
+const ALLOWED_ORIGINS = new Set([...ALLOWED_HOSTS].map((host) => `http://${host}`));
+
+function requestPermitted(req) {
+  const host = String(req.headers.host || '').toLowerCase();
+  if (!ALLOWED_HOSTS.has(host)) return false;
+  const origin = req.headers.origin;
+  if (origin && !ALLOWED_ORIGINS.has(origin)) return false;
+  const fetchSite = req.headers['sec-fetch-site'];
+  if (fetchSite === 'cross-site') return false;
+  return true;
+}
+
 const server = http.createServer((req, res) => {
-  const incomingUrl = new URL(req.url || "/", `http://${CONFIG.host}:${CONFIG.port}`);
+  if (!requestPermitted(req)) return sendJson(res, 403, { error: 'forbidden' });
+  if (req.method === 'OPTIONS') return sendJson(res, 403, { error: 'forbidden' });
+  let incomingUrl;
+  try { incomingUrl = new URL(req.url || '/', `http://${CONFIG.host}:${CONFIG.port}`); }
+  catch { return sendJson(res, 400, { error: 'bad_url' }); }
   const pathname = incomingUrl.pathname;
 
   if (pathname.startsWith("/hermes/bridge/")) {
