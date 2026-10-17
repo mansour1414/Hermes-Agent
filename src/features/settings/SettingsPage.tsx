@@ -73,8 +73,13 @@ export default function SettingsPage() {
 
   const testConnection = async () => {
     setConnectionState("testing");
-    const status = await services.system.getConnectionStatus();
-    setConnectionState(status.state === "connected" ? "ok" : "failed");
+    try {
+      const status = await services.system.getConnectionStatus();
+      setConnectionState(status.state === "connected" ? "ok" : "failed");
+    } catch (error) {
+      setConnectionState("failed");
+      pushToast({ title: t("common.error"), description: error instanceof Error ? error.message : String(error), variant: "error" });
+    }
   };
 
   return (
@@ -435,9 +440,9 @@ export default function SettingsPage() {
           <Card>
             <CardHeader title={t("settings.about")} icon={<Info className="h-4 w-4" />} />
             <CardContent className="space-y-3">
-              <AboutRow label={t("settings.version")} value="0.1.0 (demo)" />
+              <AboutRow label={t("settings.version")} value="Snowhare Control Center" />
               <AboutRow label={t("settings.build")} value="hermes-control-center / vite build" />
-              <AboutRow label="Hermes" value="v0.22.2 (expected on the target device)" />
+              <AboutRow label="Hermes" value="Version reported by the running Hermes service" />
               <div>
                 <p className="mb-1.5 text-[0.8125rem] font-medium text-ink">{t("settings.dependencies")}</p>
                 <div className="flex flex-wrap gap-1.5">
