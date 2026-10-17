@@ -172,7 +172,7 @@ export interface BridgeEvent {
   realSessionId?: string;
   model?: string;
   text?: string;
-  token?: { id: string; name: string; status: string; summary: string; output?: string; durationMs?: number };
+  tool?: { id: string; name: string; status: string; summary: string; output?: string; durationMs?: number };
   tokens?: { input: number; output: number; total: number } | null;
   durationMs?: number;
   exitCode?: number;
@@ -232,7 +232,7 @@ export async function* streamChat(input: ChatBridgeInput, signal?: AbortSignal):
     for (;;) {
       const { done, value } = await reader.read();
       if (done) break;
-      buffer += decoder.decode(value, { stream: true });
+      buffer += decoder.decode(value, { stream: true }).replace(/\r\n/g, "\n");
 
       let index: number;
       while ((index = buffer.indexOf("\n\n")) >= 0) {
