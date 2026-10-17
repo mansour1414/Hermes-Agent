@@ -292,7 +292,7 @@ export function ChatPanel() {
   const hasDraft = Object.keys(draftMessages).length > 0;
 
   return (
-    <div className="flex h-[calc(100vh-9.5rem)] min-h-[32rem] overflow-hidden rounded-2xl border border-line bg-surface">
+    <div className="flex h-full min-h-0 min-w-0 overflow-hidden rounded-2xl border border-line bg-surface">
       {/* Session list */}
       <aside className="hidden w-72 shrink-0 flex-col border-e border-line bg-canvas-alt lg:flex">
         <div className="border-b border-line p-3">
@@ -304,7 +304,7 @@ export function ChatPanel() {
             {t("chats.newChat")}
           </Button>
         </div>
-        <div className="cc-scroll flex-1 overflow-y-auto p-2">
+        <div className="cc-scroll min-h-0 flex-1 overflow-y-auto p-2">
           {loading ? (
             <div className="space-y-2 p-1">
               <Skeleton className="h-14" />
@@ -351,7 +351,7 @@ export function ChatPanel() {
       </aside>
 
       {/* Conversation */}
-      <section className="flex min-w-0 flex-1 flex-col">
+      <section className="flex min-h-0 min-w-0 flex-1 flex-col">
         {session ? (
           <>
             <header className="flex items-center gap-3 border-b border-line px-4 py-3">
@@ -386,7 +386,7 @@ export function ChatPanel() {
               />
             </header>
 
-            <div className="cc-scroll flex-1 overflow-y-auto px-4 py-5 sm:px-6">
+            <div className="cc-scroll min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-6 sm:py-5">
               <div className="mx-auto w-full max-w-3xl space-y-5">
                 {visibleMessages.length === 0 && !hasDraft ? (
                   <EmptyState
