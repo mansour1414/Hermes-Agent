@@ -2,7 +2,7 @@ import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "@/utils/cn";
 
 export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("cc-card", className)} {...props} />;
+  return <div className={cn("cc-card min-w-0", className)} {...props} />;
 }
 
 export function CardHeader({
@@ -19,7 +19,7 @@ export function CardHeader({
   className?: string;
 }) {
   return (
-    <div className={cn("flex items-start justify-between gap-3 px-5 pt-4 pb-3", className)}>
+    <div className={cn("flex min-w-0 items-start justify-between gap-3 px-4 pt-4 pb-3 sm:px-5", className)}>
       <div className="flex items-start gap-3 min-w-0">
         {icon ? (
           <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-accent">
@@ -37,7 +37,7 @@ export function CardHeader({
 }
 
 export function CardContent({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("px-5 pb-5", className)} {...props} />;
+  return <div className={cn("min-w-0 px-4 pb-4 sm:px-5 sm:pb-5", className)} {...props} />;
 }
 
 export function CardFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
