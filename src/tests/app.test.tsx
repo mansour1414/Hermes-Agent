@@ -11,6 +11,8 @@ beforeEach(() => {
   // The i18n provider restores the locale from localStorage — pin it to Arabic
   // so the assertions below stay deterministic regardless of test order.
   window.localStorage.setItem("hermes.locale", "ar");
+  // UI tests intentionally run against the deterministic demo adapter.
+  window.localStorage.setItem("cc.adapter-mode", "mock");
   useSettingsStore.setState({ settings: defaultSettings });
   demoStore.reset();
 });
