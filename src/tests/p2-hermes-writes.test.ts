@@ -10,7 +10,7 @@ afterEach(() => vi.unstubAllGlobals());
 
 function intercept(status = 200, body: unknown = {}) {
   const fetchMock = vi.fn().mockResolvedValue(
-    new Response(JSON.stringify(body), {
+    new Response(status === 204 || status === 205 || status === 304 ? null : JSON.stringify(body), {
       status,
       headers: { "Content-Type": "application/json" },
     }),
