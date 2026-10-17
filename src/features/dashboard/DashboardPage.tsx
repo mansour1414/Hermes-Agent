@@ -276,7 +276,7 @@ export default function DashboardPage() {
           {t("dashboard.quickActions")}
         </h2>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {quickActions.map((action) => (
+          {quickActions.slice(0, 3).map((action) => (
             <button
               key={action.label}
               type="button"
