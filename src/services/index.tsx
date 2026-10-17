@@ -34,8 +34,10 @@ export function resolveAdapterMode(): AdapterMode {
     }
   }
 
-  if (configured === "mock" || stored === "mock") return "mock";
-  if (configured === "hermes" || stored === "hermes") return "hermes";
+  if (configured === "mock") return "mock";
+  if (configured === "hermes") return "hermes";
+  if (stored === "mock") return "mock";
+  if (stored === "hermes") return "hermes";
   return "hermes";
 }
 
