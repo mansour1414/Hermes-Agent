@@ -177,7 +177,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="mx-auto w-full max-w-[100rem]">
+    <div className="mx-auto w-full max-w-[80rem]">
       <PageHeader title={t("dashboard.title")} description={t("dashboard.subtitle")} />
 
       {demoMode ? <DemoNotice text={t("demo.bannerBody")} className="mb-6" /> : null}
