@@ -78,8 +78,12 @@ export default function McpPage() {
   useEffect(load, [services]);
 
   const toggleEnabled = async (server: McpServer) => {
-    const updated = await services.mcp.setEnabled(server.id, !server.enabled);
-    setServers((current) => current.map((item) => (item.id === server.id ? updated : item)));
+    try {
+      const updated = await services.mcp.setEnabled(server.id, !server.enabled);
+      setServers((current) => current.map((item) => (item.id === server.id ? updated : item)));
+    } catch (error) {
+      pushToast({ title: t("common.error"), description: error instanceof Error ? error.message : String(error), variant: "error" });
+    }
   };
 
   const testConnection = async (server: McpServer) => {
@@ -88,6 +92,8 @@ export default function McpPage() {
     try {
       const result = await services.mcp.testConnection(server.id);
       setTestResult({ ok: result.ok, message: result.message });
+    } catch (error) {
+      setTestResult({ ok: false, message: error instanceof Error ? error.message : String(error) });
     } finally {
       setTestingId(null);
     }
@@ -95,10 +101,14 @@ export default function McpPage() {
 
   const remove = async () => {
     if (!confirmRemove) return;
-    await services.mcp.removeServer(confirmRemove.id);
-    setConfirmRemove(null);
-    load();
-    pushToast({ title: t("mcp.removed"), variant: "info" });
+    try {
+      await services.mcp.removeServer(confirmRemove.id);
+      setConfirmRemove(null);
+      load();
+      pushToast({ title: t("mcp.removed"), variant: "info" });
+    } catch (error) {
+      pushToast({ title: t("common.error"), description: error instanceof Error ? error.message : String(error), variant: "error" });
+    }
   };
 
   return (
