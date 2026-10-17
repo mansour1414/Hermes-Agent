@@ -1,0 +1,286 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------ */
+/*  Hermes Control Center — Design Tokens                               */
+/*  Base palette is neutral slate; the accent is a calm "Hermes teal"  */
+/*  that can be switched at runtime from Settings → Appearance.         */
+/* ------------------------------------------------------------------ */
+
+:root {
+  color-scheme: light;
+
+  --cc-canvas: 246 247 249;
+  --cc-canvas-alt: 240 242 246;
+  --cc-surface: 255 255 255;
+  --cc-surface-2: 246 247 250;
+  --cc-surface-3: 238 241 246;
+  --cc-border: 226 230 237;
+  --cc-border-strong: 205 212 222;
+  --cc-fg: 16 20 27;
+  --cc-fg-muted: 88 97 112;
+  --cc-fg-subtle: 132 141 156;
+
+  --cc-accent: 13 148 136;
+  --cc-accent-hover: 15 133 122;
+  --cc-accent-fg: 255 255 255;
+  --cc-accent-soft: 226 244 241;
+
+  --cc-success: 22 138 92;
+  --cc-success-soft: 223 243 233;
+  --cc-warning: 176 106 12;
+  --cc-warning-soft: 252 241 219;
+  --cc-danger: 194 48 48;
+  --cc-danger-soft: 253 231 231;
+  --cc-info: 41 108 194;
+  --cc-info-soft: 226 238 253;
+
+  --cc-ring: 13 148 136;
+  --cc-shadow-sm: 0 1px 2px rgb(16 20 27 / 0.05);
+  --cc-shadow-md: 0 4px 14px -4px rgb(16 20 27 / 0.12), 0 1px 3px rgb(16 20 27 / 0.05);
+  --cc-shadow-lg: 0 18px 40px -18px rgb(16 20 27 / 0.28), 0 2px 8px -2px rgb(16 20 27 / 0.08);
+}
+
+.dark {
+  color-scheme: dark;
+
+  --cc-canvas: 9 11 15;
+  --cc-canvas-alt: 13 16 21;
+  --cc-surface: 18 21 28;
+  --cc-surface-2: 23 27 35;
+  --cc-surface-3: 30 35 45;
+  --cc-border: 41 47 58;
+  --cc-border-strong: 56 64 78;
+  --cc-fg: 232 236 243;
+  --cc-fg-muted: 152 162 178;
+  --cc-fg-subtle: 111 122 139;
+
+  --cc-accent: 45 212 191;
+  --cc-accent-hover: 65 226 205;
+  --cc-accent-fg: 4 22 20;
+  --cc-accent-soft: 15 51 48;
+
+  --cc-success: 52 199 123;
+  --cc-success-soft: 12 44 30;
+  --cc-warning: 224 158 55;
+  --cc-warning-soft: 54 39 12;
+  --cc-danger: 248 113 113;
+  --cc-danger-soft: 60 22 24;
+  --cc-info: 96 165 250;
+  --cc-info-soft: 16 36 60;
+
+  --cc-ring: 45 212 191;
+  --cc-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --cc-shadow-md: 0 6px 18px -6px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.3);
+  --cc-shadow-lg: 0 24px 48px -20px rgb(0 0 0 / 0.75), 0 2px 10px -2px rgb(0 0 0 / 0.45);
+}
+
+@theme inline {
+  --color-canvas: rgb(var(--cc-canvas));
+  --color-canvas-alt: rgb(var(--cc-canvas-alt));
+  --color-surface: rgb(var(--cc-surface));
+  --color-surface-2: rgb(var(--cc-surface-2));
+  --color-surface-3: rgb(var(--cc-surface-3));
+  --color-line: rgb(var(--cc-border));
+  --color-line-strong: rgb(var(--cc-border-strong));
+  --color-ink: rgb(var(--cc-fg));
+  --color-muted: rgb(var(--cc-fg-muted));
+  --color-subtle: rgb(var(--cc-fg-subtle));
+  --color-accent: rgb(var(--cc-accent));
+  --color-accent-hover: rgb(var(--cc-accent-hover));
+  --color-accent-fg: rgb(var(--cc-accent-fg));
+  --color-accent-soft: rgb(var(--cc-accent-soft));
+  --color-success: rgb(var(--cc-success));
+  --color-success-soft: rgb(var(--cc-success-soft));
+  --color-warning: rgb(var(--cc-warning));
+  --color-warning-soft: rgb(var(--cc-warning-soft));
+  --color-danger: rgb(var(--cc-danger));
+  --color-danger-soft: rgb(var(--cc-danger-soft));
+  --color-info: rgb(var(--cc-info));
+  --color-info-soft: rgb(var(--cc-info-soft));
+
+  --font-sans: "IBM Plex Sans Arabic", "Segoe UI", "Noto Sans Arabic", "Dubai", "Tahoma",
+    system-ui, -apple-system, "Segoe UI Emoji", sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Code", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.125rem;
+  --radius-2xl: 1.5rem;
+
+  --shadow-soft: var(--cc-shadow-sm);
+  --shadow-card: var(--cc-shadow-md);
+  --shadow-float: var(--cc-shadow-lg);
+
+  --animate-fade-in: fade-in 0.18s ease-out;
+  --animate-slide-up: slide-up 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-scale-in: scale-in 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-shimmer: shimmer 1.6s linear infinite;
+  --animate-pulse-ring: pulse-ring 2.4s ease-out infinite;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgb(var(--cc-accent) / 0.45); }
+  70% { box-shadow: 0 0 0 8px rgb(var(--cc-accent) / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(var(--cc-accent) / 0); }
+}
+
+@layer base {
+  * {
+    border-color: rgb(var(--cc-border));
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  html[data-font-size="sm"] { font-size: 14px; }
+  html[data-font-size="md"] { font-size: 15px; }
+  html[data-font-size="lg"] { font-size: 17px; }
+
+  body {
+    background-color: rgb(var(--cc-canvas));
+    color: rgb(var(--cc-fg));
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "tnum";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--cc-ring));
+    outline-offset: 2px;
+    border-radius: 0.35rem;
+  }
+
+  ::selection {
+    background: rgb(var(--cc-accent) / 0.25);
+  }
+
+  h1, h2, h3, h4 {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  [dir="rtl"] {
+    letter-spacing: 0;
+  }
+
+  input, textarea, select, button {
+    font: inherit;
+    color: inherit;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: rgb(var(--cc-fg-subtle));
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--cc-border-strong) / 0.7);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--cc-border-strong)); background-clip: content-box; }
+}
+
+@layer components {
+  .cc-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--cc-border-strong) / 0.8) transparent;
+  }
+
+  .cc-skeleton {
+    background-image: linear-gradient(
+      90deg,
+      rgb(var(--cc-surface-2)) 0%,
+      rgb(var(--cc-surface-3)) 40%,
+      rgb(var(--cc-surface-2)) 80%
+    );
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+    border-radius: 0.5rem;
+  }
+
+  .cc-card {
+    background-color: rgb(var(--cc-surface));
+    border: 1px solid rgb(var(--cc-border));
+    border-radius: var(--radius-lg);
+    box-shadow: var(--cc-shadow-sm);
+  }
+
+  .cc-grid-pattern {
+    background-image:
+      radial-gradient(circle at 1px 1px, rgb(var(--cc-fg) / 0.05) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Sidebar drawer (logical + RTL-aware)                               */
+/*                                                                     */
+/*  The off-canvas transform is scoped to small screens only and is    */
+/*  written with an explicit `translate`, so the desktop state can     */
+/*  never be overridden by a directional `rtl:` utility.               */
+/*                                                                     */
+/*  Why: Tailwind emits `.rtl\:translate-x-full` AFTER                 */
+/*  `.lg\:translate-x-0`. Both have equal specificity (Tailwind v4     */
+/*  wraps the RTL variant in `:where()`), so on desktop in RTL the     */
+/*  RTL rule won and pushed the sidebar off-screen in Arabic.          */
+/*  Specificity here is explicit, so the result is deterministic:      */
+/*  0,3,0 (rtl) > 0,2,0 (closed) > 0,1,0 (base).                       */
+/* ------------------------------------------------------------------ */
+.cc-sidebar {
+  translate: 0 0;
+}
+
+@media (width < 64rem) {
+  .cc-sidebar[data-state="closed"] {
+    translate: -100% 0;
+  }
+
+  [dir="rtl"] .cc-sidebar[data-state="closed"] {
+    translate: 100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html[data-animations="off"] *,
+html[data-animations="off"] *::before,
+html[data-animations="off"] *::after {
+  animation-duration: 0.001ms !important;
+  transition-duration: 0.001ms !important;
+}
