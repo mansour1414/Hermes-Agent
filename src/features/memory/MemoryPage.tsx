@@ -98,7 +98,7 @@ export default function MemoryPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[90rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
       <PageHeader
         title={t("memory.title")}
         description={t("memory.subtitle")}
