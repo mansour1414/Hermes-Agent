@@ -107,6 +107,17 @@ export default function ModelsPage() {
     });
   }, [models, filter, providerFilter, query, sortBy]);
 
+  const exportModels = () => {
+    const rows = filtered.map(({ id, name, modelId, providerName, pricing, source, configured, authenticated, verified }) => ({ id, name, modelId, providerName, pricing, source, configured, authenticated, verified }));
+    const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = "snowhare-models.json";
+    anchor.click();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+  };
+
   const setPrimary = async (model: ModelInfo) => {
     await services.model.setActiveModel(model.id);
     setSetting("defaultModelId", model.id);
@@ -162,7 +173,7 @@ export default function ModelsPage() {
             >
               {t("models.compare")} ({compare.length})
             </Button>
-            <Button variant="secondary" leadingIcon={<Download className="h-4 w-4" />}>
+            <Button variant="secondary" leadingIcon={<Download className="h-4 w-4" />} onClick={exportModels}>
               {t("common.export")}
             </Button>
           </>
