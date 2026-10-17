@@ -82,7 +82,7 @@ export default function ProvidersPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[90rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
       <PageHeader title={t("providers.title")} description={t("providers.subtitle")} />
 
       <DemoNotice text={t("providers.credentialHelp")} className="mb-5" />
