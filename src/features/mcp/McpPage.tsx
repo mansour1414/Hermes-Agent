@@ -112,7 +112,7 @@ export default function McpPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[90rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
       <PageHeader
         title={t("mcp.title")}
         description={t("mcp.subtitle")}
