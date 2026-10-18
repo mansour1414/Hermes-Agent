@@ -206,7 +206,7 @@ describe("chats", () => {
   it("creates a demo conversation and streams a reply", async () => {
     const user = userEvent.setup();
     renderApp("/chats");
-    await main().findByText("تحدّث مع الوكيل وراجع الجلسات السابقة", {}, { timeout: 10000 });
+    await main().findByRole("button", { name: "محادثة جديدة" }, { timeout: 10000 });
     await user.click(screen.getAllByRole("button", { name: "محادثة جديدة" })[0]);
 
     const composer = await screen.findByLabelText("أرسل رسالة إلى هيرميس…");
