@@ -3,7 +3,6 @@ import { Paperclip, Send, Square } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { useI18n } from "@/i18n";
-import { cn } from "@/utils/cn";
 
 export interface ComposerAttachment {
   name: string;
@@ -47,8 +46,8 @@ export function ChatComposer({
   };
 
   return (
-    <div className="shrink-0 border-t border-line bg-canvas/95 px-3 py-2.5 backdrop-blur-xl sm:px-5">
-      <div className="mx-auto w-full max-w-4xl">
+    <div className="shrink-0 border-t border-line bg-surface px-3 py-3 sm:px-5">
+      <div className="mx-auto w-full max-w-[46rem]">
         {attachments.length > 0 ? (
           <ul className="mb-2 flex flex-wrap gap-2">
             {attachments.map((attachment, index) => (
@@ -71,7 +70,7 @@ export function ChatComposer({
           </ul>
         ) : null}
 
-        <div className="rounded-2xl border border-line bg-surface shadow-[var(--shadow-card)] focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/20">
+        <div className="rounded-xl border border-line bg-canvas focus-within:border-accent focus-within:ring-1 focus-within:ring-accent/20">
           <label htmlFor="composer-input" className="sr-only">
             {t("chats.messagePlaceholder")}
           </label>
@@ -83,9 +82,9 @@ export function ChatComposer({
             rows={1}
             disabled={disabled}
             placeholder={t("chats.messagePlaceholder")}
-            className="cc-scroll max-h-40 min-h-[3.25rem] w-full resize-none bg-transparent px-4 py-3 text-[0.875rem] leading-relaxed text-ink outline-none placeholder:text-subtle"
+            className="cc-scroll max-h-36 min-h-[3rem] w-full resize-y bg-transparent px-3 py-2.5 text-[0.875rem] leading-relaxed text-ink outline-none placeholder:text-subtle sm:px-4"
           />
-          <div className="flex items-center justify-between gap-2 border-t border-line px-2.5 py-2">
+          <div className="flex items-center justify-between gap-2 px-2.5 pb-2">
             <div className="flex items-center gap-1">
               <input
                 ref={fileRef}
@@ -133,9 +132,7 @@ export function ChatComposer({
             )}
           </div>
         </div>
-        <p className={cn("mt-1.5 text-center text-[0.6875rem] text-subtle")}>
-          {t("chats.emptyChatBody")}
-        </p>
+
       </div>
     </div>
   );
