@@ -112,6 +112,8 @@ export function ChatPanel() {
       .createSession({ modelId: defaultModelId })
       .then((created) => {
         if (cancelled) return;
+        setSessions((current) => [created, ...current.filter((item) => item.id !== created.id)]);
+        setSession(created);
         navigate(`/chats/${created.id}`, { replace: true });
       })
       .catch(() => undefined);
@@ -169,7 +171,7 @@ export function ChatPanel() {
           const refreshed = await services.chat.getSession(session.id);
           setSession(refreshed);
           setSessions((current) =>
-            current.map((item) => (item.id === refreshed.id ? refreshed : item)),
+            [refreshed, ...current.filter((item) => item.id !== refreshed.id)],
           );
         }
       }
@@ -181,6 +183,7 @@ export function ChatPanel() {
       });
     } finally {
       setStreaming(false);
+      setDraftMessages({});
       setAttachments([]);
       abortRef.current = null;
     }
