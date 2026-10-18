@@ -509,7 +509,12 @@ const chatService: ChatService = {
       ? `/api/sessions/search${qs({ q: search, limit: options?.limit ?? 50 })}`
       : `/api/sessions${qs({ limit: options?.limit ?? 50, offset: options?.offset ?? 0 })}`;
     const payload = await apiGet<RawSessionsResponse>(path);
-    return (payload.sessions || []).map((row) => mapSessionRow(row, []));
+    const saved = (payload.sessions || []).map((row) => mapSessionRow(row, []));
+    const local = [...pendingSessions.values()].filter((draft) =>
+      !saved.some((item) => item.id === draft.id) &&
+      (!search || draft.title.toLowerCase().includes(search.toLowerCase())),
+    );
+    return [...local, ...saved];
   },
 
   async getSession(id: string): Promise<ChatSession> {
