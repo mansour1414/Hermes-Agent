@@ -163,16 +163,32 @@ export function ChatPanel() {
           }));
         }
         if (event.type === "message-end") {
+          // Display the finished response immediately; a persisted transcript
+          // can lag behind the stream or be unavailable for local draft IDs.
+          setSession((current) => current ? {
+            ...current,
+            messages: [
+              ...current.messages.filter((message) => message.id !== event.messageId),
+              event.message,
+            ],
+            messageCount: current.messages.length + 1,
+          } : current);
           setDraftMessages((current) => {
             const next = { ...current };
             delete next[event.messageId];
             return next;
           });
-          const refreshed = await services.chat.getSession(session.id);
-          setSession(refreshed);
-          setSessions((current) =>
-            [refreshed, ...current.filter((item) => item.id !== refreshed.id)],
-          );
+          try {
+            const refreshed = await services.chat.getSession(session.id);
+            if (refreshed.messages.some((message) => message.role === "assistant")) {
+              setSession(refreshed);
+              setSessions((current) =>
+                [refreshed, ...current.filter((item) => item.id !== refreshed.id)],
+              );
+            }
+          } catch {
+            // Keep the streamed answer visible if transcript persistence lags.
+          }
         }
       }
     } catch (error) {
