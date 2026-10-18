@@ -82,7 +82,7 @@ export default function ComputerUsePage() {
   };
 
   return (
-    <div className="mx-auto min-w-0 w-full max-w-[76rem]">
+    <div className="mx-auto min-w-0 w-full max-w-[76rem] overflow-x-clip">
       <PageHeader
         title={t("computerUse.title")}
         description={t("computerUse.subtitle")}
@@ -109,7 +109,7 @@ export default function ComputerUsePage() {
       {loading ? (
         <SkeletonRows rows={4} />
       ) : state ? (
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid min-w-0 gap-4 lg:grid-cols-3">
           <Card className="lg:col-span-2">
             <CardHeader
               title={t("computerUse.driverStatus")}
@@ -156,7 +156,7 @@ export default function ComputerUsePage() {
               {state.permissions.map((permission) => (
                 <div
                   key={permission.id}
-                  className="flex items-center justify-between gap-3 rounded-lg border border-line bg-surface-2 px-3 py-2.5"
+                  className="flex min-w-0 flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-surface-2 px-3 py-2.5"
                 >
                   <div className="min-w-0">
                     <p className="truncate text-[0.8125rem] font-medium text-ink">{permission.label}</p>
