@@ -54,6 +54,7 @@ export function ChatPanel() {
   const [draftMessages, setDraftMessages] = useState<Record<string, string>>({});
   const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [expandedTools, setExpandedTools] = useState<Record<string, boolean>>({});
   const messageScrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -312,17 +313,19 @@ export function ChatPanel() {
   const hasDraft = Object.keys(draftMessages).length > 0;
 
   return (
-    <div className="flex h-full min-h-0 min-w-0 overflow-hidden rounded-2xl border border-line bg-surface">
+    <div className="relative flex h-full min-h-0 min-w-0 overflow-hidden rounded-xl border border-line bg-surface">
       {/* Session list */}
-      <aside className="hidden w-72 shrink-0 flex-col border-e border-line bg-canvas-alt lg:flex">
-        <div className="border-b border-line p-3">
+      {historyOpen ? <button type="button" className="absolute inset-0 z-10 bg-black/40 lg:hidden" aria-label={t("common.close")} onClick={() => setHistoryOpen(false)} /> : null}
+      <aside className={cn("absolute inset-y-0 end-0 z-20 flex w-[min(17rem,85vw)] shrink-0 flex-col border-s border-line bg-canvas-alt shadow-lg lg:static lg:w-64 lg:shadow-none", historyOpen ? "flex" : "hidden lg:flex")}>
+        <div className="flex items-center gap-2 border-b border-line p-2.5">
           <Button
-            className="w-full"
+            className="flex-1"
             leadingIcon={<MessageSquarePlus className="h-4 w-4" />}
             onClick={() => navigate("/chats?new=1")}
           >
             {t("chats.newChat")}
           </Button>
+          <button type="button" className="rounded-lg px-2 py-1.5 text-muted lg:hidden" aria-label={t("common.close")} onClick={() => setHistoryOpen(false)}>×</button>
         </div>
         <div className="cc-scroll min-h-0 flex-1 overflow-y-auto p-2">
           {loading ? (
@@ -339,7 +342,7 @@ export function ChatPanel() {
                 <li key={item.id}>
                   <button
                     type="button"
-                    onClick={() => navigate(`/chats/${item.id}`)}
+                    onClick={() => { setHistoryOpen(false); navigate(`/chats/${item.id}`); }}
                     className={cn(
                       "w-full rounded-lg px-2.5 py-2.5 text-start transition-colors",
                       item.id === sessionId
@@ -374,7 +377,8 @@ export function ChatPanel() {
       <section className="flex min-h-0 min-w-0 flex-1 flex-col">
         {session ? (
           <>
-            <header className="flex items-center gap-3 border-b border-line px-4 py-3">
+            <header className="flex shrink-0 items-center gap-2 border-b border-line px-3 py-2.5 sm:px-4">
+              <button type="button" className="rounded-lg border border-line px-3 py-2 text-xs font-medium text-muted lg:hidden" onClick={() => setHistoryOpen(true)} aria-label={locale === "ar" ? "سجل المحادثات" : "Chat history"}>{locale === "ar" ? "المحادثات" : "History"}</button>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <h2 className="truncate text-[0.9375rem] font-semibold text-ink">
@@ -383,7 +387,7 @@ export function ChatPanel() {
                   {session.pinned ? <Badge variant="accent">{t("chats.pinned")}</Badge> : null}
                   {session.demo ? <Badge variant="warning">{t("demo.badge")}</Badge> : null}
                 </div>
-                <div className="mt-1 flex flex-wrap items-center gap-3 text-[0.6875rem] text-subtle">
+                <div className="mt-0.5 hidden flex-wrap items-center gap-3 text-[0.6875rem] text-subtle sm:flex">
                   <span className="flex items-center gap-1">
                     <Cpu className="h-3 w-3" aria-hidden />
                     {models.find((model) => model.id === session.modelId)?.name ?? "—"}
@@ -406,8 +410,8 @@ export function ChatPanel() {
               />
             </header>
 
-            <div ref={messageScrollRef} className="cc-scroll min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-6 sm:py-5">
-              <div className="mx-auto w-full max-w-3xl space-y-5">
+            <div ref={messageScrollRef} className="cc-scroll min-h-0 min-w-0 flex-1 overflow-y-auto px-3 py-4 sm:px-6 sm:py-6">
+              <div className="mx-auto w-full max-w-[46rem] space-y-4 sm:space-y-5">
                 {visibleMessages.length === 0 && !hasDraft ? (
                   <EmptyState
                     icon={<MessageSquarePlus className="h-5 w-5" />}
@@ -525,17 +529,17 @@ function MessageBlock({
   return (
     <article
       className={cn(
-        "group relative rounded-2xl border px-4 py-3.5",
+        "group relative min-w-0 rounded-xl border px-3 py-3 sm:px-4",
         isUser
-          ? "ms-auto max-w-[85%] border-accent/25 bg-accent-soft/50"
-          : "me-auto w-full max-w-[92%] border-line bg-surface-2/60",
+          ? "ms-auto max-w-[90%] border-accent/20 bg-accent-soft/40"
+          : "me-auto w-full border-line/70 bg-surface-2/40",
       )}
       aria-label={isUser ? t("chats.user") : t("chats.assistant")}
     >
       <header className="mb-2 flex items-center gap-2">
         <span
           className={cn(
-            "flex h-6 w-6 items-center justify-center rounded-md text-[0.625rem] font-bold",
+            "hidden h-6 w-6 items-center justify-center rounded-md text-[0.625rem] font-bold sm:flex",
             isUser ? "bg-accent text-accent-fg" : "bg-surface-3 text-muted",
           )}
           aria-hidden
