@@ -55,7 +55,7 @@ export function ChatPanel() {
   const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [expandedTools, setExpandedTools] = useState<Record<string, boolean>>({});
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const messageScrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -121,7 +121,8 @@ export function ChatPanel() {
   }, [searchParams, services, defaultModelId, navigate]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    const panel = messageScrollRef.current;
+    if (panel) panel.scrollTop = panel.scrollHeight;
   }, [session?.messages.length, streaming]);
 
   const handleSend = async (content: string) => {
@@ -386,7 +387,7 @@ export function ChatPanel() {
               />
             </header>
 
-            <div className="cc-scroll min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-6 sm:py-5">
+            <div ref={messageScrollRef} className="cc-scroll min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-6 sm:py-5">
               <div className="mx-auto w-full max-w-3xl space-y-5">
                 {visibleMessages.length === 0 && !hasDraft ? (
                   <EmptyState
@@ -431,7 +432,7 @@ export function ChatPanel() {
                   />
                 ))}
 
-                <div ref={bottomRef} />
+                <div aria-hidden="true" />
               </div>
             </div>
 
